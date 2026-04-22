@@ -12,12 +12,20 @@ numerical_loan_data = loan_data.select_dtypes('number')
 numeric_columns = numerical_loan_data.columns.to_list()
 numeric_columns.remove('loan_status') # Removing Target feature of logistic regression from training features
 
+
+status_map = {1: 'Approved', 0: 'Rejected'} 
+loan_data['loan_decision'] = loan_data['loan_status'].map(status_map)
+
 # Picking categorical columns of loan dataframe 
 categorical_loan_data = loan_data.select_dtypes('object')
 categorical_columns = categorical_loan_data.columns.to_list()
 loan_data_corr_matrix = numerical_loan_data.corr()
 
-
+# Checking  outliers that affect person_income histogram 
+print(f" persons max income : {loan_data['person_income'].max()}")
+print(f" persons mean income : {loan_data['person_income'].mean()}")
+print(f" number of persons income  bigger than usual :: {(loan_data['person_income']>1000000).sum()}")
+print(f" top 10 largest people income : {(loan_data['person_income']).nlargest(20)}")
 
 if __name__ == "__main__":
     # Quick review of Dataset
@@ -41,6 +49,7 @@ if __name__ == "__main__":
      x =  column,
      kde = True
      )
+     plt.ticklabel_format(style='plain', axis='x')
      plt.savefig(f'visualization/histograms/{column}_histogram.png')
      plt.clf()
     
